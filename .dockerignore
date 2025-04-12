@@ -1,0 +1,26 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.ipynb_checkpoints
+
+# Data and ML artifacts
+mlruns/
+*.csv
+*.zip
+*.rar
+
+# Git & IDE config
+.git
+.gitignore
+.vscode/
+.DS_Store
+
+# OS junk
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Docker build leftovers
+*.tar

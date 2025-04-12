@@ -1,0 +1,7 @@
+FROM postgres:15.4
+
+ENV POSTGRES_USER=ml_user
+ENV POSTGRES_PASSWORD=ml_pass
+ENV POSTGRES_DB=ml_db
+
+COPY sample-dbs/titanic.sql /docker-entrypoint-initdb.d/01_titanic.sql
