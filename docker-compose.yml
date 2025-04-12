@@ -1,22 +1,22 @@
 services:
   postgres:
-    image: postgres:15.4
-    container_name: ml_postgres
-    restart: always
+    image: postgres:15
+    container_name: postgres
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: ml_user
-      POSTGRES_PASSWORD: ml_pass
-      POSTGRES_DB: ml_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: mldb
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sample-dbs/titanic.sql:/docker-entrypoint-initdb.d/titanic.sql
+      - ./data:/docker-entrypoint-initdb.d
+    networks:
+      - backend
 
   pgadmin:
-    image: dpage/pgadmin4:7.7
-    container_name: pgadmin4:7.7
-    restart: always
+    image: dpage/pgadmin4:9.2.0
+    container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
@@ -24,20 +24,16 @@ services:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin4/servers.json:/pgadmin4/servers.json
     depends_on:
       - postgres
-
-  mlflow:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.mlflow
-    container_name: mlflow_server
-    restart: always
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./mlruns:/mlruns
+    networks:
+      - backend
 
 volumes:
   postgres_data:
+    name: postgres_data_vol
   pgadmin_data:
+    name: pgadmin_data_vol
+networks:
+  backend:
