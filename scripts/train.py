@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score
 # Load data from PostgreSQL
 conn = psycopg2.connect(
     host="localhost", port=5432,
-    dbname="ml_db", user="ml_user", password="ml_pass"
+    dbname="mldb", user="ml_user", password="ml_pass"
 )
 df = pd.read_sql("SELECT * FROM passengers WHERE age IS NOT NULL", conn)
 

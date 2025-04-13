@@ -13,6 +13,8 @@ services:
       - ./data:/docker-entrypoint-initdb.d
     networks:
       - backend
+    profiles:
+      - base
 
   pgadmin:
     image: dpage/pgadmin4:9.2.0
@@ -29,11 +31,33 @@ services:
       - postgres
     networks:
       - backend
+    profiles:
+      - base
+
+  mlflow:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.mlflow
+    container_name: mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    depends_on:
+      - postgres
+    networks:
+      - backend
+    volumes:
+      - mlflow_data:/mlruns
+    profiles:
+      - base
 
 volumes:
   postgres_data:
     name: postgres_data_vol
   pgadmin_data:
     name: pgadmin_data_vol
+  mlflow_data:
+    name: mlflow_data
 networks:
   backend:
