@@ -5,23 +5,21 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: mldb
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./data:/docker-entrypoint-initdb.d
     networks:
       - backend
-    profiles:
-      - base
 
   pgadmin:
     image: dpage/pgadmin4:9.2.0
     container_name: pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
     ports:
       - "5050:80"
     volumes:
@@ -31,26 +29,23 @@ services:
       - postgres
     networks:
       - backend
-    profiles:
-      - base
 
   mlflow:
     build:
-      context: ./docker
+      context: ./mlflow
       dockerfile: Dockerfile.mlflow
     container_name: mlflow
     ports:
       - "5000:5000"
     environment:
-      MLFLOW_TRACKING_URI: http://mlflow:5000
+      MLFLOW_TRACKING_URI: $MLFLOW_TRACKING_URI
     depends_on:
       - postgres
     networks:
       - backend
     volumes:
       - mlflow_data:/mlruns
-    profiles:
-      - base
+      - ./scripts:/app/scripts
 
 volumes:
   postgres_data:
@@ -59,5 +54,6 @@ volumes:
     name: pgadmin_data_vol
   mlflow_data:
     name: mlflow_data
+
 networks:
   backend:
