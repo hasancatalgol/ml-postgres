@@ -1,6 +1,6 @@
 services:
-  postgres:
-    image: postgres:15
+  dwh:
+    image: postgres:15-alpine
     container_name: postgres
     ports:
       - "5432:5432"
@@ -26,7 +26,7 @@ services:
       - pgadmin_data:/var/lib/pgadmin
       - ./pgadmin4/servers.json:/pgadmin4/servers.json
     depends_on:
-      - postgres
+      - dwh
     networks:
       - backend
 
@@ -38,22 +38,79 @@ services:
     ports:
       - "5000:5000"
     environment:
-      MLFLOW_TRACKING_URI: $MLFLOW_TRACKING_URI
+      MLFLOW_TRACKING_URI: ${MLFLOW_TRACKING_URI}
+      MLFLOW_BACKEND_STORE_URI: ${MLFLOW_BACKEND_STORE_URI}
+      MLFLOW_ARTIFACT_ROOT: ${MLFLOW_ARTIFACT_ROOT}
+      MLFLOW_S3_ENDPOINT_URL: ${MLFLOW_S3_ENDPOINT_URL}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     depends_on:
-      - postgres
+      - dwh
+      - mlflow-db
+      - minio
     networks:
       - backend
     volumes:
       - mlflow_data:/mlruns
-      - ./scripts:/app/scripts
-
+      - ./mlflow:/app
+    command: >
+      mlflow server 
+        --backend-store-uri=$${MLFLOW_BACKEND_STORE_URI} 
+        --default-artifact-root=$${MLFLOW_ARTIFACT_ROOT} 
+        --host 0.0.0.0 
+        --port 5000
+        --gunicorn-opts "--log-level debug"
+  mlflow-db:
+    image: postgres:15-alpine
+    container_name: mlflow_db
+    environment:
+      POSTGRES_USER: mlflow
+      POSTGRES_PASSWORD: mlflow123
+      POSTGRES_DB: mlflowdb
+    volumes:
+      - mlflow_db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password
+      - MINIO_DOMAIN=minio
+    networks:
+      backend:
+        aliases:
+          - mlflow-artifacts.minio
+    ports:
+      - 9001:9001
+      - 9000:9000
+    command: ["server", "/data", "--console-address", ":9001"]
+  mc:
+    depends_on:
+      - minio
+    image: minio/mc
+    container_name: mc
+    networks:
+      backend:
+    environment:
+      - AWS_ACCESS_KEY_ID=admin
+      - AWS_SECRET_ACCESS_KEY=password
+      - AWS_REGION=us-east-1
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add minio http://minio:9000 admin password) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc rm -r --force minio/mlflow-artifacts;
+      /usr/bin/mc mb minio/mlflow-artifacts;
+      /usr/bin/mc policy set public minio/mlflow-artifacts;
+      tail -f /dev/null
+      "
+  
 volumes:
   postgres_data:
-    name: postgres_data_vol
   pgadmin_data:
-    name: pgadmin_data_vol
   mlflow_data:
-    name: mlflow_data
+  mlflow_db_data:
 
 networks:
   backend:

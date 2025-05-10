@@ -1,48 +1,8 @@
-# Variables
-COMPOSE_FILE=docker-compose.yml
-PROFILE=base
-
-# Default target
-.PHONY: help
-help:
-	@echo "Available targets:"
-	@echo "  up           - Start all containers"
-	@echo "  down         - Stop and remove containers"
-	@echo "  build        - Build all services"
-	@echo "  logs         - Show logs"
-	@echo "  ps           - Show status of containers"
-	@echo "  restart      - Restart all services"
-	@echo "  prune        - Remove volumes, images, networks (CAREFUL!)"
-	@echo "  shell        - Open a shell in mlflow container"
-	@echo "  pg-shell     - Open a shell in postgres container"
-	@echo "  airflow-cli  - Open Airflow CLI in ingestion container"
-
 up:
-	docker compose --profile $(PROFILE) -f $(COMPOSE_FILE) up -d
+	docker compose up -d
 
 down:
-	docker compose $(COMPOSE_FILE) down -v
+	docker compose down
 
 build:
-	docker compose -f $(COMPOSE_FILE) build
-
-logs:
-	docker compose -f $(COMPOSE_FILE) logs -f --tail=100
-
-ps:
-	docker compose -f $(COMPOSE_FILE) ps
-
-restart:
-	docker compose -f $(COMPOSE_FILE) down && docker compose --profile $(PROFILE) -f $(COMPOSE_FILE) up -d
-
-prune:
-	docker system prune -af --volumes
-
-shell:
-	docker exec -it mlflow bash
-
-pg-shell:
-	docker exec -it postgres bash
-
-airflow-cli:
-	docker exec -it openmetadata_ingestion airflow
+	docker compose up --build -d

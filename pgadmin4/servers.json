@@ -1,14 +1,25 @@
 {
     "Servers": {
         "1": {
-            "Name": "postgres",
+            "Name": "dwh",
             "Group": "Servers",
-            "Host": "postgres",
+            "Host": "dwh",
             "Port": 5432,
             "Username": "admin",
             "MaintenanceDB": "mldb",
             "SSLMode": "prefer",
             "ConnectPassword": "admin",
+            "ConnectNow": true
+        },
+        "2": {
+            "Name": "mlflow-db",
+            "Group": "Servers",
+            "Host": "mlflow-db",
+            "Port": 5432,
+            "Username": "mlflow",
+            "MaintenanceDB": "mlflowdb",
+            "SSLMode": "prefer",
+            "ConnectPassword": "mlflow123",
             "ConnectNow": true
         }
     }
