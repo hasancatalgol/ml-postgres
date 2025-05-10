@@ -24,8 +24,13 @@ ML-POSTGRES/
 │   └── titanic.sql
 │
 ├── 📂 mlflow/                # MLflow tracking server container
+│   │
+│   ├──📂 mlscripts/             # Model training scripts to mount/run in clients
+│   │  └── train.py              # (Optional) MLflow training script
+│   │
 │   ├── Dockerfile.mlflow     # Custom Dockerfile for MLflow
-│   └── train.py              # (Optional) MLflow training script
+│   └── Dockerfile.client     # Custom Dockerfile for MLflow
+│   
 │
 ├── 📂 mlscripts/             # Model training scripts to mount/run in clients
 │   └── train.py
@@ -35,10 +40,7 @@ ML-POSTGRES/
 │
 ├── 📂 prefect/               # Prefect flows for orchestration
 │   └── flow.py               # Example orchestrated task
-│
-├── 📂 scripts/               # Alternative location for training logic
-│   └── train.py
-│
+│ 
 ├── 📄 .env                   # Environment variables for Docker Compose
 ├── 📄 docker-compose.yml     # Main Docker orchestration file
 └── 📄 MakeFile               # (Optional) Automation commands
