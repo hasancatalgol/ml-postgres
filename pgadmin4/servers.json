@@ -21,6 +21,17 @@
             "SSLMode": "prefer",
             "ConnectPassword": "mlflow123",
             "ConnectNow": true
+        },
+        "3": {
+            "Name": "prefect-db",
+            "Group": "Servers",
+            "Host": "prefect-db",
+            "Port": 5432,
+            "Username": "prefect",
+            "MaintenanceDB": "prefect_db",
+            "SSLMode": "prefer",
+            "ConnectPassword": "prefect",
+            "ConnectNow": true
         }
     }
 }

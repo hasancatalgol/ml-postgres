@@ -82,6 +82,7 @@ services:
     - ./mlscripts:/app/mlscripts
     networks:
       - backend
+    command: ["tail", "-f", "/dev/null"]
   minio:
     image: minio/minio
     container_name: minio
@@ -121,15 +122,28 @@ services:
     image: prefecthq/prefect:2.14.17-python3.11
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
+      - PREFECT_API_DATABASE_CONNECTION_URL=postgresql+asyncpg://prefect:prefect@prefect-db:5432/prefect_db
+    depends_on:
+      - prefect-db
     command: >
-      bash -c "
-        prefect config set PREFECT_API_URL=http://0.0.0.0:4200/api &&
-        prefect server start --host 0.0.0.0
-      "
+      prefect server start --host 0.0.0.0
     ports:
       - "4200:4200"
     volumes:
       - ./prefect:/root/.prefect
+    networks:
+      - backend
+  prefect-db:
+    image: postgres:15-alpine
+    container_name: prefect-db
+    environment:
+      POSTGRES_USER: prefect
+      POSTGRES_PASSWORD: prefect
+      POSTGRES_DB: prefect_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - prefect-db-data:/var/lib/postgresql/data
     networks:
       - backend
 volumes:
@@ -137,6 +151,7 @@ volumes:
   pgadmin_data:
   mlflow_data:
   mlflow_db_data:
+  prefect-db-data:
 
 networks:
   backend:

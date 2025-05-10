@@ -1,14 +1,13 @@
+# 🧠 ML-POSTGRES: A Complete MLflow + PostgreSQL + MinIO + Prefect Tracking Platform
 
-# 🧠 ML-POSTGRES: A Complete MLflow + PostgreSQL + MinIO Tracking Platform
+This project sets up a robust local machine learning experimentation platform using Docker Compose, featuring:
 
-This project sets up a local machine learning experimentation platform using Docker Compose, featuring:
-
-- **MLflow** for experiment tracking
-- **Prefect** orchestrating statistical tests and model train/test scripts
-- **PostgreSQL** as the metadata backend
+- **MLflow** for experiment tracking and artifact versioning
+- **Prefect** for orchestrating statistical tests and training pipelines
+- **PostgreSQL** as the metadata and data warehouse backend
 - **MinIO** as the S3-compatible artifact store
-- **pgAdmin** for database management
-- **Auto-initialized SQL schemas** for a DWH
+- **pgAdmin** for easy database management
+- **Auto-initialized SQL schemas** for a structured DWH
 - **Custom client container** to run training scripts inside Docker
 
 ---
@@ -34,8 +33,9 @@ ML-POSTGRES/
 ├── 📂 pgadmin4/              # pgAdmin pre-config files
 │   └── servers.json          # Pre-defined server list
 │
-├── 📂 prefect/               # Orchestrating scripts 
-│   
+├── 📂 prefect/               # Prefect flows for orchestration
+│   └── flow.py               # Example orchestrated task
+│
 ├── 📂 scripts/               # Alternative location for training logic
 │   └── train.py
 │
@@ -52,58 +52,55 @@ ML-POSTGRES/
 
 - **Backend URI**: PostgreSQL (`mlflow-db`)
 - **Artifact Store**: MinIO (`s3://mlflow-artifacts`)
-- **Runs on**: `localhost:5000`
+- **Runs on**: `http://localhost:5000`
 
 ### ✅ PostgreSQL Databases
 
-- `dwh`: general-purpose DWH loaded from `./data/*.sql`
-- `mlflow-db`: MLflow's backend store
+- `dwh`: General-purpose DWH loaded from `./data/*.sql`
+- `mlflow-db`: MLflow's backend store for metadata
 
 ### ✅ MinIO
 
-- S3-compatible object store used by MLflow
+- S3-compatible object store for model artifacts
 - Web UI: [http://localhost:9001](http://localhost:9001)
-- Bucket `mlflow-artifacts` is auto-created and made public
+- Bucket `mlflow-artifacts` is auto-created and public
 
 ### ✅ pgAdmin
 
 - Web UI: [http://localhost:5050](http://localhost:5050)
-- Auto-configured with both `dwh` and `mlflow-db` connections
+- Pre-configured access to both `dwh` and `mlflow-db`
+
+### ✅ Prefect
+
+- Python-native orchestrator to define, schedule, and monitor workflows
+- Used here for statistical testing, training runs, and pipeline automation
 
 ---
-🏗️ Data Lakehouse Design (Bronze / Silver / Gold)
 
-This project implements a layered data architecture inside PostgreSQL, aligning with modern data lakehouse practices:
+## 🏗️ Data Lakehouse Design (Bronze / Silver / Gold)
 
-Bronze Layer: Raw ingested data (e.g., directly from CSVs or sources)
+The PostgreSQL warehouse follows a **multi-layered architecture**, inspired by modern lakehouse design:
 
-Silver Layer: Cleaned and transformed data, ready for exploration or joining
+- **Bronze**: Raw ingested data (e.g., CSV dumps, source system captures)
+- **Silver**: Cleansed, normalized, and joined datasets
+- **Gold**: High-value, curated datasets used in downstream tasks
 
-Gold Layer: Business-level aggregates and curated datasets
+### 🥇 Gold Layer Breakdown
 
-🥇 Gold Layer Structure
+| Schema     | Purpose                                                                 |
+|------------|-------------------------------------------------------------------------|
+| `GOLD_ML`  | ML-ready feature tables used in training/inference pipelines            |
+| `GOLD_BI`  | Business-optimized aggregates used in dashboards and BI tools          |
 
-The Gold Layer is split into two distinct schemas to separate use cases:
+> This platform **primarily utilizes `GOLD_ML`** for experimentation workflows in MLflow.
 
-Schema
-
-Purpose
-
-GOLD_ML
-
-Feature-ready datasets for ML training and inference pipelines
-
-GOLD_BI
-
-Reporting-friendly datasets for BI dashboards, analytics, and ad-hoc querying
-
-The primary focus of this platform is the GOLD_ML schema, which fuels all machine learning workloads registered via MLflow.
+---
 
 ## 🛠️ Getting Started
 
 ### 1. Configure Environment
 
-Create a `.env` file:
+Create a `.env` file with the following:
 
 ```env
 POSTGRES_USER=admin
@@ -129,15 +126,16 @@ docker-compose up --build -d
 
 ### 3. Open Services
 
-- MLflow UI → [http://localhost:5000](http://localhost:5000)
-- pgAdmin → [http://localhost:5050](http://localhost:5050)
-- MinIO → [http://localhost:9001](http://localhost:9001)
-
+- **MLflow UI** → [http://localhost:5000](http://localhost:5000)
+- **pgAdmin** → [http://localhost:5050](http://localhost:5050)
+- **MinIO** → [http://localhost:9001](http://localhost:9001)
+- **Prefect UI** → [http://localhost:4200](http://localhost:4200)
+- 
 ---
 
 ## 🧪 Run a Sample MLflow Experiment
 
-You can run the following script from inside a new container to register a run:
+Sample training script:
 
 ```python
 # mlscripts/train.py
@@ -173,31 +171,22 @@ docker run --network=ml-postgres_backend mlflow-client
 docker-compose down -v
 ```
 
-This removes all containers, volumes, and networks.
-
 ---
 
 ## 📌 Notes
 
-- If you make schema changes, restart PostgreSQL or mount updated SQL files.
-- Logs for each service can be inspected via `docker logs <container-name>`.
-- All services run in a shared `backend` Docker network.
+- If you update the schema SQLs, restart PostgreSQL or mount fresh volumes.
+- Logs available via `docker logs <container-name>`.
+- All containers share a single `backend` network for internal resolution.
 
 ---
 
 ## 🔒 Credentials Summary
 
-| Service        | Default User      | Default Password |
-|----------------|-------------------|------------------|
-| PostgreSQL     | admin             |      admin       |
-| MLFlow Backend | mlflow            |      mlflow123   |
-| MinIO          | admin             |      password    |
-| pgAdmin        | admin@example.com |      admin       |
-
----
-
-## 👨‍🔧 Author
-
-**Hasan Çatalgöl**  
-*Data Professional*  
-[GitHub](https://github.com/hasancatalgol)
+| Service        | Username           | Password       |
+|----------------|--------------------|----------------|
+| MinIO          | admin              | password       |
+| pgAdmin        | admin@example.com  | admin          |
+| PostgreSQL     | admin              | admin          |
+| MLflow Backend | mlflow             | mlflow123      |
+| Prefect Backend| prefect            | prefect        |
