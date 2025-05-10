@@ -73,6 +73,7 @@ ML-POSTGRES/
 ### ✅ Prefect
 
 - **Backend URI**: PostgreSQL (`prefect-db`)
+- Web UI: [http://localhost:4200](http://localhost:4200)
 - Python-native orchestrator to define, schedule, and monitor workflows
 - Used here for statistical testing, training runs, and pipeline automation
 
