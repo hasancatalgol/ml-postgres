@@ -52,7 +52,7 @@ ML-POSTGRES/
 
 - **Backend URI**: PostgreSQL (`mlflow-db`)
 - **Artifact Store**: MinIO (`s3://mlflow-artifacts`)
-- **Runs on**: `http://localhost:5000`
+- **Web UI**: [http://localhost:5000](http://localhost:5000)
 
 ### ✅ PostgreSQL Databases
 
@@ -72,6 +72,7 @@ ML-POSTGRES/
 
 ### ✅ Prefect
 
+- **Backend URI**: PostgreSQL (`prefect-db`)
 - Python-native orchestrator to define, schedule, and monitor workflows
 - Used here for statistical testing, training runs, and pipeline automation
 
