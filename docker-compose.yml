@@ -15,7 +15,7 @@ services:
       - backend
 
   pgadmin:
-    image: dpage/pgadmin4:9.2.0
+    image: dpage/pgadmin4:9.3.0
     container_name: pgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
@@ -71,6 +71,17 @@ services:
       - mlflow_db_data:/var/lib/postgresql/data
     networks:
       - backend
+  mlflow-client:
+    container_name: mlflow-client
+    build:
+      context: ./mlflow
+      dockerfile: Dockerfile.client
+    depends_on:
+      - mlflow
+    volumes:
+    - ./mlscripts:/app/mlscripts
+    networks:
+      - backend
   minio:
     image: minio/minio
     container_name: minio
@@ -105,7 +116,22 @@ services:
       /usr/bin/mc policy set public minio/mlflow-artifacts;
       tail -f /dev/null
       "
-  
+  prefect:
+    container_name: prefect
+    image: prefecthq/prefect:2.14.17-python3.11
+    environment:
+      - PREFECT_API_URL=http://prefect:4200/api
+    command: >
+      bash -c "
+        prefect config set PREFECT_API_URL=http://0.0.0.0:4200/api &&
+        prefect server start --host 0.0.0.0
+      "
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./prefect:/root/.prefect
+    networks:
+      - backend
 volumes:
   postgres_data:
   pgadmin_data:

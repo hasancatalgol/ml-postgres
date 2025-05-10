@@ -4,6 +4,7 @@
 This project sets up a local machine learning experimentation platform using Docker Compose, featuring:
 
 - **MLflow** for experiment tracking
+- **Prefect** orchestrating statistical tests and model train/test scripts
 - **PostgreSQL** as the metadata backend
 - **MinIO** as the S3-compatible artifact store
 - **pgAdmin** for database management
@@ -33,6 +34,8 @@ ML-POSTGRES/
 ├── 📂 pgadmin4/              # pgAdmin pre-config files
 │   └── servers.json          # Pre-defined server list
 │
+├── 📂 prefect/               # Orchestrating scripts 
+│   
 ├── 📂 scripts/               # Alternative location for training logic
 │   └── train.py
 │
@@ -68,6 +71,33 @@ ML-POSTGRES/
 - Auto-configured with both `dwh` and `mlflow-db` connections
 
 ---
+🏗️ Data Lakehouse Design (Bronze / Silver / Gold)
+
+This project implements a layered data architecture inside PostgreSQL, aligning with modern data lakehouse practices:
+
+Bronze Layer: Raw ingested data (e.g., directly from CSVs or sources)
+
+Silver Layer: Cleaned and transformed data, ready for exploration or joining
+
+Gold Layer: Business-level aggregates and curated datasets
+
+🥇 Gold Layer Structure
+
+The Gold Layer is split into two distinct schemas to separate use cases:
+
+Schema
+
+Purpose
+
+GOLD_ML
+
+Feature-ready datasets for ML training and inference pipelines
+
+GOLD_BI
+
+Reporting-friendly datasets for BI dashboards, analytics, and ad-hoc querying
+
+The primary focus of this platform is the GOLD_ML schema, which fuels all machine learning workloads registered via MLflow.
 
 ## 🛠️ Getting Started
 
@@ -157,12 +187,12 @@ This removes all containers, volumes, and networks.
 
 ## 🔒 Credentials Summary
 
-| Service    | Default User | Default Password |
-|------------|--------------|------------------|
-| PostgreSQL | admin / mlflow | admin / mlflow123 |
-| MLFlow Backend | mlflow | mlflow123 |
-| MinIO      | admin         | password         |
-| pgAdmin    | admin@example.com | admin         |
+| Service        | Default User      | Default Password |
+|----------------|-------------------|------------------|
+| PostgreSQL     | admin             |      admin       |
+| MLFlow Backend | mlflow            |      mlflow123   |
+| MinIO          | admin             |      password    |
+| pgAdmin        | admin@example.com |      admin       |
 
 ---
 
