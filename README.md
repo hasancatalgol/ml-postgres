@@ -58,7 +58,7 @@ ML-POSTGRES/
 
 - `dwh`: General-purpose DWH loaded from `./data/*.sql`
 - `mlflow-db`: MLflow's backend store for metadata
-
+- `prefect-db`: Prefect's backend store for metadata. Default is SQLite
 ### ✅ MinIO
 
 - S3-compatible object store for model artifacts
