@@ -17,28 +17,28 @@ This project sets up a local machine learning experimentation platform using Doc
 ```
 ML-POSTGRES/
 │
-├── data/                         # SQL files for initializing the DWH
+├── 📂 data/                  # SQL files to initialize the data warehouse
 │   ├── schemas.sql
 │   ├── stored-procedures.sql
 │   ├── tables.sql
 │   └── titanic.sql
 │
-├── mlflow/                       # MLflow server container
-│   ├── Dockerfile.mlflow
-│   └── train.py                  # Optional MLflow script for testing
+├── 📂 mlflow/                # MLflow tracking server container
+│   ├── Dockerfile.mlflow     # Custom Dockerfile for MLflow
+│   └── train.py              # (Optional) MLflow training script
 │
-├── mlscripts/                    # Training scripts to be mounted/run in clients
+├── 📂 mlscripts/             # Model training scripts to mount/run in clients
 │   └── train.py
 │
-├── pgadmin4/
-│   └── servers.json              # pgAdmin server pre-config for DBs
+├── 📂 pgadmin4/              # pgAdmin pre-config files
+│   └── servers.json          # Pre-defined server list
 │
-├── scripts/
-│   └── train.py                  # Alt location for training logic
+├── 📂 scripts/               # Alternative location for training logic
+│   └── train.py
 │
-├── .env                          # Environment variables for Docker Compose
-├── docker-compose.yml           # Main Docker orchestration file
-└── MakeFile                      # Optional Make targets (not defined here)
+├── 📄 .env                   # Environment variables for Docker Compose
+├── 📄 docker-compose.yml     # Main Docker orchestration file
+└── 📄 MakeFile               # (Optional) Automation commands
 ```
 
 ---
@@ -160,6 +160,7 @@ This removes all containers, volumes, and networks.
 | Service    | Default User | Default Password |
 |------------|--------------|------------------|
 | PostgreSQL | admin / mlflow | admin / mlflow123 |
+| MLFlow Backend | mlflow | mlflow123 |
 | MinIO      | admin         | password         |
 | pgAdmin    | admin@example.com | admin         |
 
