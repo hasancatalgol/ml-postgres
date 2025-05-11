@@ -37,9 +37,6 @@ ML-POSTGRES/
 │
 ├── 📂 pgadmin4/              # pgAdmin pre-config files
 │   └── servers.json          # Pre-defined server list
-│
-├── 📂 prefect/               # Prefect flows for orchestration
-│   └── flow.py               # Example orchestrated task
 │ 
 ├── 📄 .env                   # Environment variables for Docker Compose
 ├── 📄 docker-compose.yml     # Main Docker orchestration file
@@ -72,12 +69,6 @@ ML-POSTGRES/
 - Web UI: [http://localhost:5050](http://localhost:5050)
 - Pre-configured access to both `dwh` and `mlflow-db`
 
-### ✅ Prefect
-
-- **Backend URI**: PostgreSQL (`prefect-db`)
-- Web UI: [http://localhost:4200](http://localhost:4200)
-- Python-native orchestrator to define, schedule, and monitor workflows
-- Used here for statistical testing, training runs, and pipeline automation
 
 ---
 
@@ -133,7 +124,6 @@ docker-compose up --build -d
 - **MLflow UI** → [http://localhost:5000](http://localhost:5000)
 - **pgAdmin** → [http://localhost:5050](http://localhost:5050)
 - **MinIO** → [http://localhost:9001](http://localhost:9001)
-- **Prefect UI** → [http://localhost:4200](http://localhost:4200)
 - 
 ---
 
@@ -193,4 +183,3 @@ docker-compose down -v
 | pgAdmin        | admin@example.com  | admin          |
 | PostgreSQL     | admin              | admin          |
 | MLflow Backend | mlflow             | mlflow123      |
-| Prefect Backend| prefect            | prefect        |

@@ -1,8 +1,32 @@
-up:
-	docker compose up -d
+COMPOSE_FILE=docker-compose.yml
 
-down:
-	docker compose down
+.PHONY: help
+help:
+	@echo "Usage:"
+	@echo "  make up-airflow       # Start Airflow containers"
+	@echo "  make down-airflow     # Stop and remove Airflow containers and volumes"
+	@echo "  make up-dwh           # Start DWH containers"
+	@echo "  make down-dwh         # Stop DWH containers (keep volumes)"
+	@echo "  make up-mlflow        # Start MLflow containers"
+	@echo "  make down-mlflow      # Stop and remove MLflow containers and volumes"
+	@echo "  make up-all           # Start all containers"
+	@echo "  make down-all         # Stop and remove all containers and volumes"
 
-build:
-	docker compose up --build -d
+# Generic up for each profile
+up-%:
+	docker compose -f $(COMPOSE_FILE) --profile $* up -d
+
+# Special-case for down-dwh (no -v)
+down-dwh:
+	docker compose -f $(COMPOSE_FILE) --profile dwh down
+
+# Generic down for other profiles (removes volumes)
+down-%:
+	docker compose -f $(COMPOSE_FILE) --profile $* down -v
+
+# All
+up-all:
+	docker compose -f $(COMPOSE_FILE) up -d
+
+down-all:
+	docker compose -f $(COMPOSE_FILE) down -v

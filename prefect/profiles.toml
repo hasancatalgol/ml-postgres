@@ -1,5 +1,0 @@
-active = "default"
-
-[profiles.default]
-PREFECT_API_URL = "http://prefect:4200/api"
-PREFECT_API_DATABASE_CONNECTION_URL = "postgresql+asyncpg://prefect:prefect@prefect-db:5432/prefect_db"

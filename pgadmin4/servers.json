@@ -1,37 +1,37 @@
 {
-    "Servers": {
-        "1": {
-            "Name": "dwh",
-            "Group": "Servers",
-            "Host": "dwh",
-            "Port": 5432,
-            "Username": "admin",
-            "MaintenanceDB": "mldb",
-            "SSLMode": "prefer",
-            "ConnectPassword": "admin",
-            "ConnectNow": true
-        },
-        "2": {
-            "Name": "mlflow-db",
-            "Group": "Servers",
-            "Host": "mlflow-db",
-            "Port": 5432,
-            "Username": "mlflow",
-            "MaintenanceDB": "mlflowdb",
-            "SSLMode": "prefer",
-            "ConnectPassword": "mlflow123",
-            "ConnectNow": true
-        },
-        "3": {
-            "Name": "prefect-db",
-            "Group": "Servers",
-            "Host": "prefect-db",
-            "Port": 5432,
-            "Username": "prefect",
-            "MaintenanceDB": "prefect_db",
-            "SSLMode": "prefer",
-            "ConnectPassword": "prefect",
-            "ConnectNow": true
-        }
+  "Servers": {
+    "1": {
+      "Name": "dwh",
+      "Group": "Servers",
+      "Host": "dwh",
+      "Port": 5432,
+      "Username": "admin",
+      "MaintenanceDB": "mldb",
+      "SSLMode": "prefer",
+      "ConnectPassword": "admin",
+      "ConnectNow": true
+    },
+    "2": {
+      "Name": "mlflow-db",
+      "Group": "Servers",
+      "Host": "mlflow-db",
+      "Port": 5432,
+      "Username": "mlflow",
+      "MaintenanceDB": "mlflowdb",
+      "SSLMode": "prefer",
+      "ConnectPassword": "mlflow123",
+      "ConnectNow": true
+    },
+    "3": {
+      "Name": "airflow-db",
+      "Group": "Servers",
+      "Host": "airflow-db",
+      "Port": 5432,
+      "Username": "airflow",
+      "MaintenanceDB": "airflow",
+      "SSLMode": "prefer",
+      "ConnectPassword": "airflow",
+      "ConnectNow": true
     }
+  }
 }
