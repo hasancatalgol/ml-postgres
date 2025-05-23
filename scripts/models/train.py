@@ -6,7 +6,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 
 # Setup tracking
-mlflow.set_tracking_uri("http://mlflow:5000")
 mlflow.set_experiment(experiment_id="0")
 
 # Load data
@@ -34,7 +33,7 @@ with mlflow.start_run():
 
     # Save plot
     os.makedirs("artifacts", exist_ok=True)
-    plot_path = "artifacts/pred_vs_actual.png"
+    plot_path = "pred_vs_actual.png"
     plt.savefig(plot_path)
     plt.close()
 
@@ -42,6 +41,6 @@ with mlflow.start_run():
     mlflow.log_artifact(plot_path)
 
     # Optional: log text artifact
-    with open("artifacts/summary.txt", "w") as f:
+    with open("summary.txt", "w") as f:
         f.write("Model trained successfully with RandomForestRegressor.\n")
-    mlflow.log_artifact("artifacts/summary.txt")
+    mlflow.log_artifact("summary.txt")

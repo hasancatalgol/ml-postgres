@@ -32,6 +32,17 @@
       "SSLMode": "prefer",
       "ConnectPassword": "airflow",
       "ConnectNow": true
+    },
+    "4": {
+      "Name": "fastapi-backend",
+      "Group": "Servers",
+      "Host": "fastapi-backend",
+      "Port": 5432,
+      "Username": "backend_user",
+      "MaintenanceDB": "backend_db",
+      "SSLMode": "prefer",
+      "ConnectPassword": "backend_pass",
+      "ConnectNow": true
     }
   }
 }
